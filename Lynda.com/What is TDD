@@ -1,0 +1,7 @@
+# What is Test Driven Development?
+
+1. TDD is not equal with unit testing
+
+In Unit Testing we write the code logic first then we write tests for it
+
+In TDD we write tests first and then we write code.
