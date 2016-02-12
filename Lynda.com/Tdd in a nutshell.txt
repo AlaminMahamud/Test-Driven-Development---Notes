@@ -1,0 +1,7 @@
+1. Write a Test
+2. Watch the test fail
+3. Write Application logic - as simple as possible
+4. Pass the Test
+5. Refactor, removing duplication
+6. pass the test again
+
