@@ -1,0 +1,6 @@
+# What Kind of testing?
+
+1. beta testing
+2. performance testing
+3. stress testing
+4. integration testing
