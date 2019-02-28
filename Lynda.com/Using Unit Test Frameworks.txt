@@ -1,5 +1,0 @@
-java - junit
-.net - nunit
-python - unittest, PyUnit
-c++ - CpppUnit
-Objective - C - OCUnit

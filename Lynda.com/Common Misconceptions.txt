@@ -1,4 +1,0 @@
-Does TDD work for everything?
-Am i supposed to write all my tests at first
-
-

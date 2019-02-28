@@ -1,2 +1,16 @@
-# Test-Driven-Development---Notes
-Test-driven development (TDD) is a software development process that relies on the repetition of a very short development cycle: first the developer writes an (initially failing) automated test case that defines a desired improvement or new function, then produces the minimum amount of code to pass that test
+
+# Test Driven Development
+
+## Table of contents
+
+- [concepts](#concepts)
+
+## Concepts
+
+### Types of Test
+
+- **Unit tests**: Make sure a class or a function works as expected in isolation
+- **Functional tests**: Verify that the microservice does what it says from the consumer's point of view, and behaves correctly even on bad requests
+- **Integration tests**: Verify how a microservice integrates with all its network dependencies
+- **Load tests**: Measure the microservice performances
+- **End-to-end tests**: Verify that the whole system works with an end-to-end test

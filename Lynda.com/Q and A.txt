@@ -1,3 +1,0 @@
-# We have testers should we use them to write these tests ?
-
-no, it is only for the programmers purpose
