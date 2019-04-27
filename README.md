@@ -6,6 +6,8 @@ Writing tests, rules, managing them with loads of examples
 
 - [Concepts](#concepts)
 - [TDD Rules](#tdd-rules)
+- [Magic Tricks of Testing](#magic-tricks-of-testing)
+  - [Message Testing Rules](#message-testing-rules)
 
 ### Concepts
 
@@ -35,6 +37,64 @@ Writing tests, rules, managing them with loads of examples
 
 From the TDD point of view, if you don’t have a failing test there is no bug, so you have to come up with at least one test that exposes the issue you are trying to solve.
 
+### Magic Tricks of Testing
+
+Testing should be based on the message flow between objects. For Example there are two types of messages -
+
+1. **Query** - Return Something / Change Nothing
+2. **Command** - Return Nothing / Change
+
+And There are three ways message can flow between objects
+
+1. **Incoming Messages** - messages a method receives
+2. **Self to Self Messages** - calling to private method
+3. **Outgoing Messages** - messages a method return to another method
+
+#### Message Testing Rules
+
+![rules-of-testing-for-different-types-of-messages](./images/test-table-with-messages.png)
+
+- **Incoming Query Message** - test incoming query messages by making assertions about what they send back. Also test the interface not the implementation.
+
+  Now this following method should return the 2\*input. For example if you give 2 it should return 4. It's a query message because whatever you send it does not change the state, rather it does some computation and return the value.
+
+  ```py
+  class Hello:
+      def world(self, x):
+          return x*2
+  ```
+
+  To test it we should only need to assert the return value. We don't what it does inside from a TDD point of view.
+
+  ```py
+  def test_world():
+      assert Hello().world(2) == 4
+  ```
+
+- **Incoming Command Message** - Assert about direct public side effects. For example - we might call a setter to set a value. By this way we are directly changing it's state. So we need to assert the changed state
+
+  ```py
+  class Hello:
+      def set_world(self, x):
+          self.world_name = x
+  ```
+
+  ```py
+  def test_set_world():
+      h = Hello()
+      h.set_world('earth')
+      assert h.world_name == 'earth'
+  ```
+
+- **Self-to-self Query/Command Message** - These are the conditions when a public method calls a private method. The Whole Application does not know about it. Only the public method are supposed to access it.
+
+  If the tested public method can access it and got the expected value it should, then no need to test it.
+
+- **Outgoing Query Message** - Say for example we are passing a value to another method. If it does not change the state we should not test it. Cause we are already testing `Incoming Query Message`.
+- **Outgoing Command Message** - they directly change the state of others by calling setters. There is a clear distinction between `Incoming Command` and `Outgoing Command`. For Example if we are testing the `setter` method than we call it `Incoming Command`, otherwise `Outgoing Commnad`. Use a `Mock Object` to hide the implementation. Cause this is a `unit test` not the `integration test`.
+
+  **Mock Objects and their originals** should play by **common API**.
+
 ## Built With
 
 - [pytest](https://docs.pytest.org/en/latest/) - The testing framework used for python
@@ -62,3 +122,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 - Hat tip to anyone whose code was used
 - Inspiration
 - etc
+
+## Resources
+
+- [The magic tricks of testing](https://speakerdeck.com/skmetz/magic-tricks-of-testing-railsconf)
