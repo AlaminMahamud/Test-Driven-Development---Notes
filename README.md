@@ -11,6 +11,7 @@ Writing tests, rules, managing them with loads of examples
 - [Mocking Objects](#mocking-objects)
   - [Simple Return Value](#simple-return-value)
   - [Complex Return Value](#complex-return-value)
+  - [Asserting Calls](#asserting-calls)
 
 ### Concepts
 
