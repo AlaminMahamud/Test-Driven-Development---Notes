@@ -50,9 +50,9 @@ And There are three ways message can flow between objects
 2. **Self to Self Messages** - calling to private method
 3. **Outgoing Messages** - messages a method return to another method
 
-#### Message Testing Rules
+![message-flow](./images/message-flow.jpg)
 
-![rules-of-testing-for-different-types-of-messages](./images/test-table-with-messages.png)
+#### Message Testing Rules
 
 - **Incoming Query Message** - test incoming query messages by making assertions about what they send back. Also test the interface not the implementation.
 
@@ -94,6 +94,8 @@ And There are three ways message can flow between objects
 - **Outgoing Command Message** - they directly change the state of others by calling setters. There is a clear distinction between `Incoming Command` and `Outgoing Command`. For Example if we are testing the `setter` method than we call it `Incoming Command`, otherwise `Outgoing Commnad`. Use a `Mock Object` to hide the implementation. Cause this is a `unit test` not the `integration test`.
 
   **Mock Objects and their originals** should play by **common API**.
+
+![rules-of-testing-for-different-types-of-messages](./images/test-table-with-messages.png)
 
 ## Built With
 
