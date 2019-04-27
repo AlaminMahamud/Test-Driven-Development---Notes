@@ -8,6 +8,9 @@ Writing tests, rules, managing them with loads of examples
 - [TDD Rules](#tdd-rules)
 - [Magic Tricks of Testing](#magic-tricks-of-testing)
   - [Message Testing Rules](#message-testing-rules)
+- [Mocking Objects](#mocking-objects)
+  - [Simple Return Value](#simple-return-value)
+  - [Complex Return Value](#complex-return-value)
 
 ### Concepts
 
@@ -96,6 +99,165 @@ And There are three ways message can flow between objects
   **Mock Objects and their originals** should play by **common API**.
 
 ![rules-of-testing-for-different-types-of-messages](./images/test-table-with-messages.png)
+
+### Mocking Objects
+
+```py
+>>> from unittest import mock
+>>> m = mock.Mock()
+>>> dir(m)
+['assert_any_call', 'assert_called_once_with', 'assert_called_with', 'assert_has_cal\
+ls', 'attach_mock', 'call_args', 'call_args_list', 'call_count', 'called', 'configur\
+e_mock', 'method_calls', 'mock_add_spec', 'mock_calls', 'reset_mock', 'return_value'\
+, 'side_effect']
+
+>>> m.some_attribute
+<Mock name='mock.some_attribute' id='140222043808432'>
+
+>>> dir(m)
+['assert_any_call', 'assert_called_once_with', 'assert_called_with', 'assert_has_cal\
+ls', 'attach_mock', 'call_args', 'call_args_list', 'call_count', 'called', 'configur\
+e_mock', 'method_calls', 'mock_add_spec', 'mock_calls', 'reset_mock', 'return_value'\
+, 'side_effect', 'some_attribute']
+
+```
+
+As you can see this class is somehow different from what you are used to. First of all, its instances do not raise an AttributeError when asked for a non-existent attribute, but they happily return another instance of Mock itself. Second, the attribute you tried to access has now been created inside the object and accessing it returns the same mock object as before.
+
+Mock objects are callables, which means that they may act both as attributes and as methods. If you try to call the mock it just returns another mock with a name that includes parentheses to signal its callable nature
+
+```py
+>>> m.some_attribute
+<Mock name='mock.some_attribute' id='140222043808432'>
+
+>>> m.some_attribute()
+<Mock name='mock.some_attribute()' id='140247621475856'>
+```
+
+#### Simple Return Value
+
+```py
+>>> m.some_attribute.return_value = 42
+>>> m.some_attribute()
+42
+```
+
+the mock returns is exactly the object that it is instructed to use as return value. If the return value is a callable such as a function, calling the mock will return the function itself and not the result of the function. Let me give you an example
+
+```py
+>>> def print_answer():
+... print("42")
+...
+>>>
+>>> m.some_attribute.return_value = print_answer
+>>> m.some_attribute()
+<function print_answer at 0x7f8df1e3f400>
+```
+
+#### Complex Return Value
+
+The side_effect parameter of mock objects is a very powerful tool. It accepts three different flavours of objects: callables, iterables, and exceptions, and changes its behaviour accordingly.
+
+- **If you pass an exception** the mock will raise it
+
+  ```py
+  >>> m.some_attribute.side_effect = ValueError('A custom value error')
+  >>> m.some_attribute()
+  Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/usr/lib/python3.6/unittest/mock.py", line 939, in __call__
+  return _mock_self._mock_call(*args, **kwargs)
+  File "/usr/lib/python3.6/unittest/mock.py", line 995, in _mock_call
+  raise effect
+  ValueError: A custom value error
+  ```
+
+- **If you pass an iterable**, such as for example a generator, a plain list, tuple, or similar objects, the mock will yield the values of that iterable, i.e. return every value contained in the iterable on subsequent calls of the mock.
+
+  ```py
+  >>> m.some_attribute.side_effect = range(3)
+  >>> m.some_attribute()
+  0
+  >>> m.some_attribute()
+  1
+  >>> m.some_attribute()
+  2
+  >>> m.some_attribute()
+  Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/usr/lib/python3.6/unittest/mock.py", line 939, in __call__
+  return _mock_self._mock_call(*args, **kwargs)
+  File "/usr/lib/python3.6/unittest/mock.py", line 998, in _mock_call
+  result = next(effect)
+  StopIteration
+  ```
+
+  As this raises `StopIteration` you can safely use this mock object in a loop.
+
+- **if you feed side_effect a callable**, the latter will be executed with the parameters passed when calling the attribute.
+
+  ```py
+  >>> def print_answer():
+  ...
+  print("42")
+  >>> m.some_attribute.side_effect = print_answer
+  >>> m.some_attribute()
+  42
+  ```
+
+  Slightly, More complex example with arguments
+
+  ```py
+  >>> def print_number(num):
+  ...
+  print("Number:", num)
+  ...
+  >>> m.some_attribute.side_effect = print_number
+  >>> m.some_attribute(5)
+  Number: 5
+  ```
+
+**Side Effect can be given a class** and return an instance of it.
+
+```py
+>>> class Number:
+    ...  def __init__(self, value):
+    ...     self._value = value
+    ...  def print_value(self):
+    ...     print("Value:", self._value)
+    ...
+
+>>> m.some_attribute.side_effect = Number
+
+>>> n = m.some_attribute(26)
+
+>>> n
+<__main__.Number object at 0x7f8df1aa4470>
+
+>>> n.print_value()
+Value: 26
+```
+
+#### Asserting Calls
+
+```py
+from unittest import mock
+import my_obj_to_be_tested
+
+
+def test_connect():
+    external_obj = mock.Mock()
+    my_obj_to_be_tested.MyObj(external_obj)
+    external_obj.connect.assert_called_with()
+```
+
+Here we are testing `connect` method of `MyObj`. We are passing an `external_obj` to `MyObj` constructor. this `external_obj` can be anything like -
+
+- database_object
+- third-party-library
+- saas API or anything
+
+The Point is we don't know what `external_obj` does behind the scenes. All we know our `MyObj` should call `external_obj`'s `connect` method. That's it. The rest is upto the service to do whatever it response, that's not headache for this scenario. Surely, that `external_obj` will make sure it sends response based on the documentation they provide. But it is their responsibility to test them, not `MyObj`'s.
 
 ## Built With
 
