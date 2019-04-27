@@ -259,6 +259,60 @@ Here we are testing `connect` method of `MyObj`. We are passing an `external_obj
 
 The Point is we don't know what `external_obj` does behind the scenes. All we know our `MyObj` should call `external_obj`'s `connect` method. That's it. The rest is upto the service to do whatever it response, that's not headache for this scenario. Surely, that `external_obj` will make sure it sends response based on the documentation they provide. But it is their responsibility to test them, not `MyObj`'s.
 
+We expect `MyObj` to call the `external_obj`'s `connect` method. So we express the expectation calling `external_obj.connect.assert_called_with()`.
+
+What happens behind the scenes? The MyObj class receives the fake external object and somewhere in its initialization process calls the connect method of the mock object. This call creates the method itself as a mock object. This new mock records the parameters used to call it and the subsequent call to its assert_called_with method checks that the method was called and that no parameters were passed.
+
+In this case an object like -
+
+```py
+class MyObj():
+    def __init__(self, repo):
+        repo.connect()
+```
+
+would pass the test, as the object passed as `repo` is a mock that **does nothing but record the calls**. As you can see, the `__init__()` method actually calls `repo.connect()` , and `repo` is expected to be a full-featured external object that provides connect in its API. Calling `repo.connect()` when `repo` is a **mock object**, instead, silently creates the method (as another mock object) and **records that the method has been called once without arguments**.
+
+The `assert_called_with` method allows us to also **check the parameters we passed when calling**.
+
+To show this let us pretend that we expect the `MyObj.setup` method to call `setup(cache=True, max_connections=256)` on the external object. Remember that this is an outgoing command, so **we are interested in checking the parameters and not the result**.
+
+The new test can be something like -
+
+```py
+def test_setup():
+    external_obj = mock.Mock()
+    obj = myobj.MyObj(external_obj)
+    obj.setup()
+    external_obj.setup.assert_called_with(cache=True, max_connections=256)
+```
+
+In this case an object that passes the test can be -
+
+```py
+class MyObj():
+    def **init**(self, repo):
+        self._repo = repo
+        repo.connect()
+
+    def setup(self):
+        self._repo.setup(cache=True, max_connections=256)
+```
+
+If we change the setup method to -
+
+```py
+def setup(self):
+    self._repo.setup(cache=True)
+```
+
+the test will fail with the following error
+
+```shell
+E AssertionError: Expected call: setup(cache=True, max_connections=256)
+E Actual call: setup(cache=True)
+```
+
 ## Built With
 
 - [pytest](https://docs.pytest.org/en/latest/) - The testing framework used for python
@@ -290,3 +344,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Resources
 
 - [The magic tricks of testing](https://speakerdeck.com/skmetz/magic-tricks-of-testing-railsconf)
+- [Clean Architecture Python](http://www.thedigitalcatonline.com/blog/2016/11/14/clean-architectures-in-python-a-step-by-step-example/)
