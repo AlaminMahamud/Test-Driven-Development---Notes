@@ -345,7 +345,7 @@ def test_get_info():
         assert fi.get_info() == (filename, original_path, test_abspath)
 ```
 
-We can patch also using a decorator
+We can patch also using a **decorator**
 
 ```python
 
@@ -358,6 +358,43 @@ def test_get_info(abspath_mock):
     fi = FileInfo(original_path)
     assert fi.get_info() == (filename, original_path, test_abspath)
 
+```
+
+Multiple patches
+
+```python
+@patch('os.path.getsize')
+@patch('os.path.abspath')
+def test_get_info(abspath_mock, getsize_mock):
+    filename = 'somefile.ext'
+    original_path = '../{}'.format(filename)
+
+    test_abspath = 'some/abs/path'
+    abspath_mock.return_value = test_abspath
+
+    test_size = 1234
+    getsize_mock.return_value = test_size
+
+    fi = FileInfo(original_path)
+    assert fi.get_info() == (filename, original_path, test_abspath, test_size)
+```
+
+Please note that, **the decorator which is nearest to the function is applied first**. Always remember that the decorator syntax with @ is a shortcut to replace the function with the output of the decorator, so two decorators result in
+
+```python
+@decorator1
+@decorator2
+def myfunction():
+    pass
+```
+
+which is a shortcut for
+
+```python
+def myfunction():
+    pass
+
+myfunction = decorator1(decorator2(myfunction))
 ```
 
 ## Built With
