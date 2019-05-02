@@ -12,6 +12,7 @@ Writing tests, rules, managing them with loads of examples
   - [Simple Return Value](#simple-return-value)
   - [Complex Return Value](#complex-return-value)
   - [Asserting Calls](#asserting-calls)
+  - [Patching](#patching)
 
 ### Concepts
 
@@ -312,6 +313,51 @@ the test will fail with the following error
 ```shell
 E AssertionError: Expected call: setup(cache=True, max_connections=256)
 E Actual call: setup(cache=True)
+```
+
+#### Patching
+
+Patching, in a testing framework, means to replace a globally reachable object with a mock, thus achieving the goal of having the code run unmodified, while part of it has been hot swapped, that is, replaced at run time.
+
+It means to inform Python that during the execution of a specific portion of the code you want a globally accessible module/object replaced by a mock. A Small Usecase -
+
+our function given a file_path - `get_info(file_path)` returns a tuple like the following
+
+```python
+(
+    'file_name',
+    '../../relative-file-name',
+    '/home/alamin/absolute-file-path' # <- Here ??? we don't know the output in advance
+                                      # so we need to patch it.
+)
+```
+
+```python
+from unittest.mock import patch
+
+def test_get_info():
+    filename = 'somefile.ext'
+    original_path = '../{}'.format(filename)
+    with patch('os.path.abspath') as abspath_mock:
+        test_abspath = 'some/abs/path'
+        abspath_mock.return_value = test_abspath
+        fi = FileInfo(original_path)
+        assert fi.get_info() == (filename, original_path, test_abspath)
+```
+
+We can patch also using a decorator
+
+```python
+
+@patch('os.path.abspath')
+def test_get_info(abspath_mock):
+    test_abspath = 'some/abs/path'
+    abspath_mock.return_value = test_abspath
+    filename = 'somefile.ext'
+    original_path = '../{}'.format(filename)
+    fi = FileInfo(original_path)
+    assert fi.get_info() == (filename, original_path, test_abspath)
+
 ```
 
 ## Built With
