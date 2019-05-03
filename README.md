@@ -397,6 +397,83 @@ def myfunction():
 myfunction = decorator1(decorator2(myfunction))
 ```
 
+Patching immutable objects
+
+The objects (classes, modules, functions, etc.) that are implemented in C are shared between interpreters59, and this requires those objects to be immutable, so that you cannot alter them at runtime from a single interpreter.
+
+An example of this immutability can be given easily using a Python console -
+
+```python
+>>> a = 1
+>>> a.conjugate = 5
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+AttributeError: 'int' object attribute 'conjugate' is read-only
+```
+
+What has this immutability to do with patching? What patch does is actually to temporarily replace an attribute of an object (method of a class, class of a module, etc.), which also means that if we try to replace an attribute in an immutable object the patching action will fail.
+
+let's say we have a file - file_logger.py
+
+```python
+import datetime
+
+
+class Logger:
+    def __init__(self):
+        self.messages = []
+
+    def log(self, message):
+        self.messages.append((datetime.datetime.now(), message))
+```
+
+and the tests for it
+
+```python
+from unittest.mock import patch
+from fileinfo.logger import Logger
+
+
+@patch('datetime.datetime.now')
+def test_log(mock_now):
+    test_now = 123
+    test_message = 'A test message'
+    mock_now.return_value = test_now
+
+    test_logger = Logger()
+    test_logger.log(test_message)
+    assert test_logger.messages == [
+        (test_now, test_message)
+    ]
+
+```
+
+Now when we run `pytest -svv` it throws error:
+
+```shell
+TypeError("can't set attributes of built-in/extension type 'datetime.datetime'")
+```
+
+**Solution** - importing or subclassing an immutable object gives you a **mutable “copy”** of that object.
+
+```python
+@patch('fileinfo.logger.datetime.datetime')
+def test_log(mock_datetime):
+    test_now = 123
+    test_message = "A test message"
+    mock_datetime.now.return_value = test_now
+
+    test_logger = Logger()
+    test_logger.log(test_message)
+    assert test_logger.messages = (test_now, test_message)
+```
+
+##### Warnings
+
+- when you have to create more than 3 mocks, there must be something wrong in the testing approach
+- consider the complexity of the mocks
+- The third advice is to consider mocks as “hooks” that you throw at the external system, and that break its hull to reach its internal structure. These hooks are obviously against the assumption that we can interact with a system knowing only its external behaviour, or its API. As such, you should keep in mind that each mock you create is a step back from this perfect assumption, thus “breaking the spell” of the decoupled interaction. Doing this you will quickly become annoyed when you have to create too many mocks, and this will contribute in keeping you aware of what you are doing (or overdoing).
+
 ## Built With
 
 - [pytest](https://docs.pytest.org/en/latest/) - The testing framework used for python
