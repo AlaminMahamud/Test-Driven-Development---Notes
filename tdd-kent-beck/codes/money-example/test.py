@@ -22,8 +22,15 @@ def test_to_string():
     assert str(Money(1, 'USD')) == '1 USD'
 
 
+def test_addition():
+    assert "10 USD" == str(Money(9, "USD") + Money(1, "USD"))
+    assert "10 USD" == str(Money(9, "USD") + Money(1, "CHF"))
+
+
 test_equals()
 test_multiplication()
 
 test_currency()
 test_to_string()
+
+test_addition()

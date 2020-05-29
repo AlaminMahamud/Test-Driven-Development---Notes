@@ -1,4 +1,4 @@
-class Money():
+class Money:
     def __init__(self, amount, currency):
         self._amount = amount
         self._currency = currency
@@ -14,6 +14,10 @@ class Money():
     def __eq__(self, other):
         return (self.amount == other.amount) and \
                (self.currency == other.currency)
+
+    def __add__(self, other):
+        amount = self.amount + other.amount
+        return self.get_instance_of_called_class(amount, self.currency)
 
     @classmethod
     def get_instance_of_called_class(cls, amount, currency):

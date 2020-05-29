@@ -674,6 +674,11 @@ def test_to_string():
 ```
 ---
 
+![](assets/87e38fd1.png)
+
+- addition of currencies
+
+
 ### Possibilities
 
 *Method*: Team needs to have a consistent experience growing the design of the system, little by little so the mechanics of the transformation are well practiced
