@@ -22,6 +22,7 @@
 ### Problem
 
 - Report Format
+
 ![](assets/report-format.png)
 - to make a multi currency report we need to add currencies
 ![](assets/add-currencies.png)
