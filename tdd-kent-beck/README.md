@@ -27,9 +27,12 @@ As soon as we get an error
 - we back up, 
 - shift to fake implementations 
 - and refactor to right code
- 
+
 
 The translation of feeling into test. The longer we do it the better we able to translate our aesthetic judgement into tests
+
+
+As soon we are refactoring we need to make sure we are using new functionality to avoid coupling between tests. <-- Thoughts?
 
 ### Problem
 
@@ -352,6 +355,45 @@ class Dollar:
 ![](assets/751598e7.png)
 
 ---
+
+![](assets/19fa1a8c.png)
+
+- removed the `amount` attr usage from outside `Dollar`
+
+```python
+def test_multiply_dollars():
+    dollar = Dollar(5)
+    assert dollar.times(2) == Dollar(10)
+    assert dollar.times(3) == Dollar(15)
+```
+
+- and added a property for `amount`
+```python
+class Dollar:
+    def __init__(self, amount):
+        self._amount = amount
+
+    @property
+    def amount(self):
+        """Gets amount"""
+        return self._amount
+
+    def times(self, multiplier):
+        return Dollar(self.amount * multiplier)
+
+    def __eq__(self, other):
+        return self.amount == other.amount
+
+``` 
+
+- test passes
+
+now our todo list looks like 
+
+![](assets/45705511.png)
+
+---
+
 
 ### Possibilities
 

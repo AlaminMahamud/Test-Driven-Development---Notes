@@ -1,15 +1,13 @@
 from dollar import Dollar
 
 
-def test_multiply_dollars():
+def test_dollar_multiplication():
     dollar = Dollar(5)
-    product = dollar.times(2)
-    assert product.amount == 10
-    product = dollar.times(3)
-    assert product.amount == 15
+    assert dollar.times(2) == Dollar(10)
+    assert dollar.times(3) == Dollar(15)
 
 
-def test_equality():
+def test_dollar_equality():
     dollar1 = Dollar(5)
     dollar2 = Dollar(5)
     assert dollar1 == dollar2
@@ -19,5 +17,5 @@ def test_equality():
     assert dollar1 != dollar2
 
 
-test_multiply_dollars()
-test_equality()
+test_dollar_multiplication()
+test_dollar_equality()
