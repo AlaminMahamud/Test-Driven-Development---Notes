@@ -39,6 +39,27 @@ We will often work on system there is no TDD for part of the code we are working
 
 ---
 
+![](assets/b6370d77.png)
+
+- compare franc with dollar
+
+```python
+
+def test_equals():
+    assert Franc(5) == Franc(5)
+    assert Dollar(5) == Dollar(5)
+
+    assert not Franc(6) == Franc(69)
+    assert not Dollar(50) == Dollar(55)
+
+    assert Franc(5) == Dollar(5)
+
+```
+
+- it's passing (we know our logic is flawed)
+
+
+
 ### Problem
 
 - Report Format
@@ -471,7 +492,36 @@ Avoiding Duplication
 
 - creating SuperClass `Money`
  
- 
+---
+
+![](assets/a32687d1.png)
+
+- comparing Franc with Dollars
+
+```python
+
+def test_equals():
+    assert Franc(5) == Franc(5)
+    assert Dollar(5) == Dollar(5)
+
+    assert not Franc(6) == Franc(69)
+    assert not Dollar(50) == Dollar(55)
+
+    assert Franc(5) == Dollar(5)
+
+```
+
+- here is the change of snippet to do the comparison
+
+```python
+def __eq__(self, other):
+    print(f"__eq__ called --> self:{self!r} \n other:{other!r}")
+    return (self.amount == other.amount) and \
+           (self.__class__.__name__ == other.__class__.__name__)
+
+```
+
+---
 
 ### Possibilities
 

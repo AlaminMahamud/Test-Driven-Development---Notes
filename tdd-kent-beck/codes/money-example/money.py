@@ -7,4 +7,9 @@ class Money:
         return self._amount
 
     def __eq__(self, other):
-        return self.amount == other.amount
+        print(f"__eq__ called --> self:{self!r} \n other:{other!r}")
+        return (self.amount == other.amount) and \
+               (self.__class__.__name__ == other.__class__.__name__)
+
+
+

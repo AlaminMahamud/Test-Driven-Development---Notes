@@ -21,6 +21,8 @@ def test_equals():
     assert not Franc(6) == Franc(69)
     assert not Dollar(50) == Dollar(55)
 
+    assert Franc(5) == Dollar(5)
+
 
 test_franc_multiplication()
 test_dollar_multiplication()
