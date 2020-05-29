@@ -14,7 +14,7 @@ def test_dollar_equality():
 
     dollar1 = Dollar(10)
     dollar2 = Dollar(11)
-    assert dollar1 != dollar2
+    assert not dollar1 == dollar2
 
 
 test_dollar_multiplication()

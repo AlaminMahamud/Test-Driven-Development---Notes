@@ -330,7 +330,7 @@ def test_equality():
 
     dollar1 = Dollar(10)
     dollar2 = Dollar(11)
-    assert dollar1 != dollar2
+    assert not dollar1 == dollar2
 
 ```
 
@@ -394,6 +394,72 @@ now our todo list looks like
 
 ---
 
+![](assets/b609b343.png)
+
+- test for Franc Multiplication
+
+```python
+def test_franc_multiplication():
+    franc = Franc(5)
+    assert franc.times(2) == Franc(10)
+    assert franc.times(3) == Franc(15)
+
+```
+
+- doing all the usual step by step progress to get an working state
+
+```python
+class Franc:
+    def __init__(self, amount):
+        pass
+
+    def times(self, multiplier):
+        pass
+
+    def __eq__(self, other):
+        return True
+```
+
+- since the above stuff passes let's move onto another test
+
+```python
+
+def test_franc_equals():
+    franc1 = Franc(5)
+    franc2 = Franc(5)
+    assert franc1 == franc2
+
+    franc1 = Franc(6)
+    franc2 = Franc(65)
+    assert not franc1 == franc2
+```
+
+- to make the ^ test work, made the following change
+
+```python
+class Franc:
+    def __init__(self, amount):
+        self._amount = amount
+
+    @property
+    def amount(self):
+        return self._amount
+
+    def times(self, multiplier):
+        return Franc(self.amount * multiplier)
+
+    def __eq__(self, other):
+        return self.amount == other.amount
+
+```
+
+- now we have another problem. *Duplication*. 
+  - Two equals for two currency
+  - Two times for two currency
+Assume this for multiple currencies, our code will grow, so as our duplicacies
+
+---
+ 
 
 ### Possibilities
 
