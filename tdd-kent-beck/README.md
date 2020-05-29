@@ -549,6 +549,98 @@ class Money:
 
 ```
 
+---
+
+![](assets/d22d9faf.png)
+
+- adding currency support
+- tests are updated
+
+```python
+from dollar import Dollar
+from franc import Franc
+
+
+def test_multiplication():
+
+    # test_franc_multiplication
+    franc = Franc(5, "CHF")
+    assert franc.times(2) == Franc(10, "CHF")
+    assert franc.times(3) == Franc(15, "CHF")
+
+    # test_dollar_multiplication
+    dollar = Dollar(5, "USD")
+    assert dollar.times(2) == Dollar(10, "USD")
+    assert dollar.times(3) == Dollar(15, "USD")
+
+
+def test_equals():
+    assert Franc(5, "CHF") == Franc(5, "CHF")
+    assert Dollar(5, "USD") == Dollar(5, "USD")
+    assert not Franc(6, "CHF") == Franc(69, "CHF")
+    assert not Dollar(50, "USD") == Dollar(55, "USD")
+    assert not Franc(5, "CHF") == Dollar(5, "USD")
+
+
+def test_currency():
+    assert "USD" == Dollar(1, "USD").currency
+    assert "CHF" == Franc(1, "CHF").currency
+
+
+test_equals()
+test_multiplication()
+
+test_currency()
+
+```
+
+- *Money* class
+
+```python
+class Money():
+    def __init__(self, amount, currency):
+        self._amount = amount
+        self._currency = currency
+
+    @property
+    def amount(self):
+        return self._amount
+
+    @property
+    def currency(self):
+        return self._currency
+
+    def __eq__(self, other):
+        return (self.amount == other.amount) and \
+               (self.currency == other.currency)
+
+    @classmethod
+    def get_instance_of_called_class(cls, amount, currency):
+        return cls(amount, currency)
+
+    def times(self, multiplier):
+        return self.get_instance_of_called_class(self.amount * multiplier, self.currency)
+
+```
+
+- *Frank* Class
+
+```python
+class Franc(Money):
+    pass
+
+```
+
+- *Dollar* Class
+
+```python
+class Dollar(Money):
+    pass
+```
+
+- now do we even need these ^ classes?
+
+---
 
 ### Possibilities
 

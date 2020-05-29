@@ -1,32 +1,39 @@
 from dollar import Dollar
 from franc import Franc
-from money import Money
 
 
 def test_multiplication():
-    money = Money(20)
-    assert money.times(2) == Money(40)
-    assert not money.times(2) == Dollar(40)
-    assert not money.times(2) == Franc(40)
 
     # test_franc_multiplication
-    franc = Franc(5)
-    assert franc.times(2) == Franc(10)
-    assert franc.times(3) == Franc(15)
+    franc = Franc(5, "CHF")
+    assert franc.times(2) == Franc(10, "CHF")
+    assert franc.times(3) == Franc(15, "CHF")
 
     # test_dollar_multiplication
-    dollar = Dollar(5)
-    assert dollar.times(2) == Dollar(10)
-    assert dollar.times(3) == Dollar(15)
+    dollar = Dollar(5, "USD")
+    assert dollar.times(2) == Dollar(10, "USD")
+    assert dollar.times(3) == Dollar(15, "USD")
 
 
 def test_equals():
-    assert Franc(5) == Franc(5)
-    assert Dollar(5) == Dollar(5)
-    assert not Franc(6) == Franc(69)
-    assert not Dollar(50) == Dollar(55)
-    assert not Franc(5) == Dollar(5)
+    assert Franc(5, "CHF") == Franc(5, "CHF")
+    assert Dollar(5, "USD") == Dollar(5, "USD")
+    assert not Franc(6, "CHF") == Franc(69, "CHF")
+    assert not Dollar(50, "USD") == Dollar(55, "USD")
+    assert not Franc(5, "CHF") == Dollar(5, "USD")
+
+
+def test_currency():
+    assert "USD" == Dollar(1, "USD").currency
+    assert "CHF" == Franc(1, "CHF").currency
+
+
+def test_to_string():
+    assert str(Dollar(1, 'USD')) == '1 USD'
 
 
 test_equals()
 test_multiplication()
+
+test_currency()
+test_to_string()
