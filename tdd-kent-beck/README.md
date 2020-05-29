@@ -642,6 +642,38 @@ class Dollar(Money):
 
 ---
 
+![](assets/d898dd12.png)
+
+- now let's remove the subclasses
+- removed `Franc`
+- removed `Dollar`
+- removed duplicate tests
+
+```python
+
+def test_multiplication():
+    money = Money(5, "CHF")
+    assert money.times(2) == Money(10, "CHF")
+    assert money.times(3) == Money(15, "CHF")
+
+
+def test_equals():
+    assert Money(5, "CHF") == Money(5, "CHF")
+    assert not Money(6, "CHF") == Money(69, "CHF")
+    assert not Money(5, "CHF") == Money(5, "USD")
+
+
+def test_currency():
+    assert "USD" == Money(1, "USD").currency
+    assert "CHF" == Money(1, "CHF").currency
+
+
+def test_to_string():
+    assert str(Money(1, 'USD')) == '1 USD'
+
+```
+---
+
 ### Possibilities
 
 *Method*: Team needs to have a consistent experience growing the design of the system, little by little so the mechanics of the transformation are well practiced
@@ -656,3 +688,4 @@ class Dollar(Money):
 - How small and ugly the changes can be to make the new tests run
 - How often the tests are run
 - How many teensy-weensy steps make up the refactorings
+- Every time I am making changes to the codebase stale codes & tests needs to be removed. (that looks cumbersome!)
