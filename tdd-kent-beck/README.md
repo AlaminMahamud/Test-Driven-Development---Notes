@@ -31,8 +31,13 @@ As soon as we get an error
 
 The translation of feeling into test. The longer we do it the better we able to translate our aesthetic judgement into tests
 
-
 As soon we are refactoring we need to make sure we are using new functionality to avoid coupling between tests. <-- Thoughts?
+
+We will often work on system there is no TDD for part of the code we are working upon. One way to tackle this is 
+- Write the test that you wish you had. If you don't you will eventually break something while refactoring.
+- retroactively test before refactoring
+
+---
 
 ### Problem
 
@@ -459,6 +464,13 @@ class Franc:
 Assume this for multiple currencies, our code will grow, so as our duplicacies
 
 ---
+
+![](assets/f27ed777.png)
+
+Avoiding Duplication 
+
+- creating SuperClass `Money`
+ 
  
 
 ### Possibilities
