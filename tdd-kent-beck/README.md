@@ -19,6 +19,18 @@
 - Run all tests and see them all succeed
 - Refactor to remove duplication
  
+ 
+Running the tests we are making sure what is obvious to us is also obvious to our system. 
+ 
+As soon as we get an error
+
+- we back up, 
+- shift to fake implementations 
+- and refactor to right code
+ 
+
+The translation of feeling into test. The longer we do it the better we able to translate our aesthetic judgement into tests
+
 ### Problem
 
 - Report Format
@@ -180,6 +192,93 @@ Our current workflow
 - made the test run by dummy code (horrible sins)
 - gradually generalizing the working code replacing consts with vars
 - rather than addressing all, tackling them one by one
+
+---
+
+*TDD Cycle*
+
+- Clearly Delineate the interface in paper
+- Make it run with dummy code. Red --> Green Feedback Loop
+  - if the solution is obvious do it once
+  - otherwise take small step and go to that phase incrementally
+- Now Refactor the code and remove the duplicated stuff away
+
+Divide and Conquer. 
+First make it work, then refactor to achieve clean code
+
+![](assets/e631dfc9.png)
+
+Let's focus on Dollar Side Effects - we want to call the method multiple times without changing the initial `amount` field
+
+```python
+from dollar import Dollar
+
+
+def test_multiply_dollars():
+    dollar = Dollar(5)
+    dollar.times(2)
+    assert dollar.amount == 10
+    dollar.times(3)
+    assert dollar.amount == 15
+
+
+test_multiply_dollars()
+
+```
+
+- test fails
+```python
+Traceback (most recent call last):
+  File "test.py", line 12, in <module>
+    test_multiply_dollars()
+  File "test.py", line 9, in test_multiply_dollars
+    assert dollar.amount == 15
+AssertionError
+```
+
+- now changing the test to have another object for the product
+
+```python
+from dollar import Dollar
+
+
+def test_multiply_dollars():
+    dollar = Dollar(5)
+    product = dollar.times(2)
+    assert product.amount == 10
+    product = dollar.times(3)
+    assert product.amount == 15
+
+
+test_multiply_dollars()
+
+```
+
+- test fails
+
+```python
+Traceback (most recent call last):
+  File "test.py", line 12, in <module>
+    test_multiply_dollars()
+  File "test.py", line 7, in test_multiply_dollars
+    assert product.amount == 10
+AttributeError: 'NoneType' object has no attribute 'amount'
+```
+- returning product from `Dollar`
+
+```python
+class Dollar:
+    def __init__(self, amount):
+        self.amount = amount
+
+    def times(self, multiplier):
+        return Dollar(self.amount * multiplier)
+
+```
+
+- test passes
+
+![](assets/0defbf15.png)
 
 ---
 
