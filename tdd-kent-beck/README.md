@@ -282,6 +282,77 @@ class Dollar:
 
 ---
 
+![](assets/daf6abaa.png)
+
+```python
+def test_equality():
+    dollar1 = Dollar(5)
+    dollar2 = Dollar(5)
+    assert dollar1 == dollar2
+```
+
+- assertion error
+```python
+Traceback (most recent call last):
+  File "test.py", line 19, in <module>
+    test_equality()
+  File "test.py", line 15, in test_equality
+    assert dollar1 == dollar2
+AssertionError
+```
+
+- adding `__eq__` 
+
+```python
+class Dollar:
+    def __init__(self, amount):
+        self.amount = amount
+
+    def times(self, multiplier):
+        return Dollar(self.amount * multiplier)
+
+    def __eq__(self, other):
+        return true
+```
+
+- test passes
+
+- adding another condition fails
+
+```python
+def test_equality():
+    dollar1 = Dollar(5)
+    dollar2 = Dollar(5)
+    assert dollar1 == dollar2
+
+    dollar1 = Dollar(10)
+    dollar2 = Dollar(11)
+    assert dollar1 != dollar2
+
+```
+
+- update the logic
+
+```python
+class Dollar:
+    def __init__(self, amount):
+        self.amount = amount
+
+    def times(self, multiplier):
+        return Dollar(self.amount * multiplier)
+
+    def __eq__(self, other):
+        return self.amount == other.amount
+
+```
+
+- test passed
+- some more test cases
+
+![](assets/751598e7.png)
+
+---
+
 ### Possibilities
 
 *Method*: Team needs to have a consistent experience growing the design of the system, little by little so the mechanics of the transformation are well practiced
@@ -291,6 +362,7 @@ class Dollar:
 *Opportunity* - combination of comprehensive, confidence-generated tests, well-factored program makes possible to isolate design decision which helps the team to identify the few potential sources of errors 
  
 ### Thoughts
+
 - How each test  cover a small increment of functionality
 - How small and ugly the changes can be to make the new tests run
 - How often the tests are run

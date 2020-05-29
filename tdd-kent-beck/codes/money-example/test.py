@@ -9,4 +9,15 @@ def test_multiply_dollars():
     assert product.amount == 15
 
 
+def test_equality():
+    dollar1 = Dollar(5)
+    dollar2 = Dollar(5)
+    assert dollar1 == dollar2
+
+    dollar1 = Dollar(10)
+    dollar2 = Dollar(11)
+    assert dollar1 != dollar2
+
+
 test_multiply_dollars()
+test_equality()
