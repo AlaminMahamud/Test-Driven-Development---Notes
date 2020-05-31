@@ -716,3 +716,13 @@ def __add__(self, other):
 - How many teensy-weensy steps make up the refactorings
 - Every time I am making changes to the codebase stale codes & tests needs to be removed. (that looks cumbersome!)
 - It is addictive
+
+> I think the reason for this is that working in a test-driven development style gives you this
+sense of keeping just one ball in the air at once, so you can concentrate on that ball properly
+and do a really good job with it. When I'm trying to add some new functionality, I'm not
+worried about what really makes a good design for this piece of function, I'm just trying to get
+a test to pass as easily as I can. When I switch to refactoring mode, I'm not worried about
+adding some new function, I'm just worried about getting the right design. With both of these
+I'm just focused on one thing at a time, and as a result I can concentrate better on that one
+thing. - Martin Fowler
+

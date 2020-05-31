@@ -1,4 +1,4 @@
-# Testing
+# Testing with Python
 
 Writing tests, rules, managing them with loads of examples
 
@@ -18,7 +18,7 @@ Writing tests, rules, managing them with loads of examples
 
 #### Types of Test
 
-- **Unit tests**: Make sure a class or a function works as expected in isolation
+- **Unit tests**: Make sure a class or a function or a unit of code works as expected in isolation
 - **Functional tests**: Verify that the microservice does what it says from the consumer's point of view, and behaves correctly even on bad requests
 - **Integration tests**: Verify how a microservice integrates with all its network dependencies
 - **Load tests**: Measure the microservice performances
@@ -63,7 +63,7 @@ And There are three ways message can flow between objects
 
   Now this following method should return the 2\*input. For example if you give 2 it should return 4. It's a query message because whatever you send it does not change the state, rather it does some computation and return the value.
 
-  ```py
+  ```python
   class Hello:
       def world(self, x):
           return x*2
@@ -71,20 +71,20 @@ And There are three ways message can flow between objects
 
   To test it we should only need to assert the return value. We don't what it does inside from a TDD point of view.
 
-  ```py
+  ```python
   def test_world():
       assert Hello().world(2) == 4
   ```
 
 - **Incoming Command Message** - Assert about direct public side effects. For example - we might call a setter to set a value. By this way we are directly changing it's state. So we need to assert the changed state
 
-  ```py
+  ```python
   class Hello:
       def set_world(self, x):
           self.world_name = x
   ```
 
-  ```py
+  ```python
   def test_set_world():
       h = Hello()
       h.set_world('earth')
@@ -104,7 +104,7 @@ And There are three ways message can flow between objects
 
 ### Mocking Objects
 
-```py
+```python
 >>> from unittest import mock
 >>> m = mock.Mock()
 >>> dir(m)
@@ -128,7 +128,7 @@ As you can see this class is somehow different from what you are used to. First 
 
 Mock objects are callables, which means that they may act both as attributes and as methods. If you try to call the mock it just returns another mock with a name that includes parentheses to signal its callable nature
 
-```py
+```python
 >>> m.some_attribute
 <Mock name='mock.some_attribute' id='140222043808432'>
 
@@ -138,7 +138,7 @@ Mock objects are callables, which means that they may act both as attributes and
 
 #### Simple Return Value
 
-```py
+```python
 >>> m.some_attribute.return_value = 42
 >>> m.some_attribute()
 42
@@ -146,7 +146,7 @@ Mock objects are callables, which means that they may act both as attributes and
 
 the mock returns is exactly the object that it is instructed to use as return value. If the return value is a callable such as a function, calling the mock will return the function itself and not the result of the function. Let me give you an example
 
-```py
+```python
 >>> def print_answer():
 ... print("42")
 ...
@@ -162,7 +162,7 @@ The side_effect parameter of mock objects is a very powerful tool. It accepts th
 
 - **If you pass an exception** the mock will raise it
 
-  ```py
+  ```python
   >>> m.some_attribute.side_effect = ValueError('A custom value error')
   >>> m.some_attribute()
   Traceback (most recent call last):
@@ -176,7 +176,7 @@ The side_effect parameter of mock objects is a very powerful tool. It accepts th
 
 - **If you pass an iterable**, such as for example a generator, a plain list, tuple, or similar objects, the mock will yield the values of that iterable, i.e. return every value contained in the iterable on subsequent calls of the mock.
 
-  ```py
+  ```python
   >>> m.some_attribute.side_effect = range(3)
   >>> m.some_attribute()
   0
@@ -198,7 +198,7 @@ The side_effect parameter of mock objects is a very powerful tool. It accepts th
 
 - **if you feed side_effect a callable**, the latter will be executed with the parameters passed when calling the attribute.
 
-  ```py
+  ```python
   >>> def print_answer():
   ...
   print("42")
@@ -209,7 +209,7 @@ The side_effect parameter of mock objects is a very powerful tool. It accepts th
 
   Slightly, More complex example with arguments
 
-  ```py
+  ```python
   >>> def print_number(num):
   ...
   print("Number:", num)
@@ -221,7 +221,7 @@ The side_effect parameter of mock objects is a very powerful tool. It accepts th
 
 **Side Effect can be given a class** and return an instance of it.
 
-```py
+```python
 >>> class Number:
     ...  def __init__(self, value):
     ...     self._value = value
@@ -242,7 +242,7 @@ Value: 26
 
 #### Asserting Calls
 
-```py
+```python
 from unittest import mock
 import my_obj_to_be_tested
 
@@ -267,7 +267,7 @@ What happens behind the scenes? The MyObj class receives the fake external objec
 
 In this case an object like -
 
-```py
+```python
 class MyObj():
     def __init__(self, repo):
         repo.connect()
@@ -281,7 +281,7 @@ To show this let us pretend that we expect the `MyObj.setup` method to call `set
 
 The new test can be something like -
 
-```py
+```python
 def test_setup():
     external_obj = mock.Mock()
     obj = myobj.MyObj(external_obj)
@@ -291,7 +291,7 @@ def test_setup():
 
 In this case an object that passes the test can be -
 
-```py
+```python
 class MyObj():
     def **init**(self, repo):
         self._repo = repo
@@ -303,7 +303,7 @@ class MyObj():
 
 If we change the setup method to -
 
-```py
+```python
 def setup(self):
     self._repo.setup(cache=True)
 ```

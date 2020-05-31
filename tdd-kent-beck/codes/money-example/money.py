@@ -1,6 +1,9 @@
+from decimal import Decimal
+
+
 class Money:
-    def __init__(self, amount, currency):
-        self._amount = amount
+    def __init__(self, amount, currency="USD"):
+        self._amount = Decimal(amount)
         self._currency = currency
 
     @property
@@ -15,19 +18,5 @@ class Money:
         return (self.amount == other.amount) and \
                (self.currency == other.currency)
 
-    def __add__(self, other):
-        if self.currency == other.currency:
-            amount = self.amount + other.amount
-            return self.get_instance_of_called_class(amount, self.currency)
-        else:
-            raise NotImplementedError
-
-    @classmethod
-    def get_instance_of_called_class(cls, amount, currency):
-        return cls(amount, currency)
-
-    def times(self, multiplier):
-        return self.get_instance_of_called_class(self.amount * multiplier, self.currency)
-
     def __str__(self):
-        return f"{self.amount} {self.currency}"
+        return f"{round(self.amount, 2)} {self.currency}"
