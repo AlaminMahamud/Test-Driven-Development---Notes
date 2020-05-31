@@ -671,8 +671,29 @@ def test_currency():
 def test_to_string():
     assert str(Money(1, 'USD')) == '1 USD'
 
+
+def test_addition():
+    # same currency addition
+    assert "10 USD" == str(Money(9, "USD") + Money(1, "USD"))
+
+    # different currency addition
+    assert "10 USD" == str(Money(9, "USD") + Money(1, "CHF"))
+
 ```
+
+- addition method
+
+```python
+def __add__(self, other):
+    if self.currency == other.currency:
+        amount = self.amount + other.amount
+        return self.get_instance_of_called_class(amount, self.currency)
+    else:
+        raise NotImplementedError
+```
+
 ---
+
 
 ![](assets/87e38fd1.png)
 
@@ -694,3 +715,4 @@ def test_to_string():
 - How often the tests are run
 - How many teensy-weensy steps make up the refactorings
 - Every time I am making changes to the codebase stale codes & tests needs to be removed. (that looks cumbersome!)
+- It is addictive

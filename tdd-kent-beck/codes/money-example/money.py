@@ -16,8 +16,11 @@ class Money:
                (self.currency == other.currency)
 
     def __add__(self, other):
-        amount = self.amount + other.amount
-        return self.get_instance_of_called_class(amount, self.currency)
+        if self.currency == other.currency:
+            amount = self.amount + other.amount
+            return self.get_instance_of_called_class(amount, self.currency)
+        else:
+            raise NotImplementedError
 
     @classmethod
     def get_instance_of_called_class(cls, amount, currency):

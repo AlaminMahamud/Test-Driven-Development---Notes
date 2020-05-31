@@ -23,7 +23,10 @@ def test_to_string():
 
 
 def test_addition():
+    # same currency addition
     assert "10 USD" == str(Money(9, "USD") + Money(1, "USD"))
+
+    # different currency addition
     assert "10 USD" == str(Money(9, "USD") + Money(1, "CHF"))
 
 
